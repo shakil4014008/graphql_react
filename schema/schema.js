@@ -1,6 +1,8 @@
 //exactly what data looks like
 const graphql = require('graphql');
-const _ = require('lodash') //walk through collection of data
+//const _ = require('lodash') //walk through collection of data
+const axios = require('axios');
+
 const {
     GraphQLObjectType,
     GraphQLString, 
@@ -8,11 +10,11 @@ const {
     GraphQLSchema
 } = graphql; 
 
-const users =[
-   {id: '23', firstName: "john", age: 30},
-   {id: '47', firstName: "shakil", age: 44}
+// const users =[
+//    {id: '23', firstName: "john", age: 30},
+//    {id: '47', firstName: "shakil", age: 44}
 
-];
+// ];
 //this tells application has a concept of user, and related tables  
 const UserType = new GraphQLObjectType({
    name: 'User',
@@ -32,7 +34,9 @@ const RootQuery = new GraphQLObjectType({
           type: UserType, //return 
           args: {id: {type: GraphQLString }} ,//input parameters
           resolve(parentValue, args){  //grab real data 
-             return _.find (users, {id: args.id}); //send data. 
+             //return _.find (users, {id: args.id}); //send data. 
+             return axios.get(`http://localhost:3000/users//${args.id}`)
+                   .then(resp => resp.data);
           }
       }
  
